@@ -61,13 +61,13 @@ const Index: NextPage = () => {
           <Box mt={1}>
             <Alert severity="error">
               <b>Error</b>: Your browser does not support the required
-              filesystem APIs. See what browsers are supported{" "}
+              filesystem APIs. Take a look at the{" "}
               <Link
                 href="https://caniuse.com/native-filesystem-api"
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <b>here</b>
+                <b>supported browser versions</b>
               </Link>
               .
             </Alert>
