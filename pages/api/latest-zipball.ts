@@ -3,16 +3,24 @@ import { NextApiHandler } from "next";
 import unzipper from "unzipper";
 import { ReadStream } from "fs";
 
+let cache = undefined as any;
 const fetchCurrentVersion = async () => {
   type CurrentVersionResponse = {
     tag_name?: string;
     zipball_url?: string;
     published_at?: string;
   };
+  if (process.env.NODE_ENV === "development" && cache) {
+    console.log("Sending cached response, for development.");
+    return cache;
+  }
   try {
     const { data } = await Axios.get<CurrentVersionResponse>(
       "https://api.github.com/repos/NeverSinkDev/NeverSink-Filter/releases/latest"
     );
+    if (process.env.NODE_ENV === "development") {
+      cache = data;
+    }
     return data ?? {};
   } catch (error) {
     console.error(error.message);

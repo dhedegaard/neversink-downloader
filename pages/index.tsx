@@ -1,3 +1,14 @@
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  Divider,
+  Link,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { NextPage } from "next";
 import React from "react";
 import { useRemoteFilters } from "../hooks/useRemoteFilters";
@@ -5,12 +16,11 @@ import useSelectPoeDirectory from "../hooks/useSelectPoeDirectory";
 
 const Index: NextPage = () => {
   const directory = useSelectPoeDirectory();
+  const remoteFilters = useRemoteFilters();
 
   const onClickSelectDirectory = React.useCallback(() => {
     directory.selectDirectory();
   }, [directory]);
-
-  const remoteFilters = useRemoteFilters();
 
   const onClickWriteFilters = React.useCallback(async () => {
     if (remoteFilters.files.length === 0 || directory.handle == null) {
@@ -38,30 +48,82 @@ const Index: NextPage = () => {
   }, [remoteFilters, directory]);
 
   return (
-    <div>
-      <p>Newest version: {remoteFilters.tag_name ?? "<Unknown>"}</p>
-      <p>
-        Currently installed version:{" "}
-        {directory.currentlyInstalledVersion ?? "<None>"}
-      </p>
-      <button onClick={onClickSelectDirectory}>Vælg mappe!</button>
-      {(remoteFilters.files.length > 0 || directory.handle != null) && (
-        <button onClick={onClickWriteFilters}>Skriv filtre!</button>
-      )}
-      <h1>Local filters:</h1>
-      <ul>
-        {directory.filters.map((filter) => (
-          <li key={filter}>{filter}</li>
-        ))}
-      </ul>
-      {}
-      <h1>Remote filters:</h1>
-      <ul>
-        {remoteFilters.files.map((filter) => (
-          <li key={filter.path}>{filter.path}</li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <AppBar position="static" color="primary">
+        <Toolbar>
+          <Container maxWidth="md">
+            <Typography variant="h6">Neversink downloader</Typography>
+          </Container>
+        </Toolbar>
+      </AppBar>
+      <Container maxWidth="md">
+        {(directory.type === "unsupported" || true) && (
+          <Box mt={1}>
+            <Alert severity="error">
+              <b>Error</b>: Your browser does not support the required
+              filesystem APIs. See what browsers are supported{" "}
+              <Link
+                href="https://caniuse.com/native-filesystem-api"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <b>here</b>
+              </Link>
+              .
+            </Alert>
+          </Box>
+        )}
+        <Box mt={2}>
+          <Typography paragraph>
+            A simple solution to helping you keep your Neversink lootfilter up
+            to date.
+          </Typography>
+        </Box>
+        <Typography paragraph>
+          Newest version: {remoteFilters.tag_name ?? "<Unknown>"}
+        </Typography>
+        <Typography paragraph>
+          Currently installed version:{" "}
+          {directory.currentlyInstalledVersion ?? "<None>"}
+        </Typography>
+        <Box mb={2}>
+          <Divider />
+        </Box>
+        <Box mb={2}>
+          <Typography paragraph>
+            <b>Step 1</b>, select your "My Games\Path of Exile" folder using the
+            button below.
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={onClickSelectDirectory}
+            disabled={directory.type === "unsupported"}
+          >
+            Choose the filter folder.
+          </Button>
+        </Box>
+        <Box mb={2}>
+          <Divider />
+        </Box>
+        <Typography paragraph>
+          <b>Step 2</b>, write the most current filters to disk by clicking the
+          button below.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onClickWriteFilters}
+          disabled={
+            remoteFilters.files.length === 0 ||
+            directory.handle == null ||
+            directory.type === "unsupported"
+          }
+        >
+          Skriv filtre!
+        </Button>
+      </Container>
+    </>
   );
 };
 
