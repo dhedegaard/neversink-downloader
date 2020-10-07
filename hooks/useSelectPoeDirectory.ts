@@ -67,6 +67,9 @@ const useSelectPoeDirectory = (): Result => {
       })
       .catch((error) => {
         console.error(error);
+        alert(
+          "Error selecting a valid directory, try again or check your logs"
+        );
       });
   }, [setHandle, type]);
 

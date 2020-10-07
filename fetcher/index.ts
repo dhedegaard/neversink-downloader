@@ -6,12 +6,17 @@ type CurrentVersionResponse = {
   published_at: string;
 };
 export const fetchCurrentVersion = async (): Promise<
-  CurrentVersionResponse
+  CurrentVersionResponse | undefined
 > => {
-  const { data } = await Axios.get<CurrentVersionResponse>(
-    "https://api.github.com/repos/NeverSinkDev/NeverSink-Filter/releases/latest"
-  );
-  return data;
+  try {
+    const { data } = await Axios.get<CurrentVersionResponse>(
+      "https://api.github.com/repos/NeverSinkDev/NeverSink-Filter/releases/latest"
+    );
+    return data;
+  } catch (error) {
+    console.error(error.message);
+    return undefined;
+  }
 };
 
 export type FiltersResponse = Array<{
