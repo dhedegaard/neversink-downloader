@@ -1,1 +1,7 @@
+Stuff to fix/implement later:
+
+- Show when the browser does not support the filesystem API's.
+- Pretty UI.
+- Manifest file, favicon and opengraph.
+- PWA and service worker.
 - Later, remove all the @ts-expect-error, when the required new types are in typescript.
