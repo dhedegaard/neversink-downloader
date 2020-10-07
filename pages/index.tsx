@@ -31,8 +31,10 @@ const Index: NextPage = () => {
         alert(
           `Error writing filter: ${filter.path}, try again or check your logs`
         );
+        return;
       }
     }
+    alert("Filters written succesfully");
   }, [remoteFilters, directory]);
 
   return (
