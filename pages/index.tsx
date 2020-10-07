@@ -57,7 +57,7 @@ const Index: NextPage = () => {
         </Toolbar>
       </AppBar>
       <Container maxWidth="md">
-        {(directory.type === "unsupported" || true) && (
+        {directory.type === "unsupported" && (
           <Box mt={1}>
             <Alert severity="error">
               <b>Error</b>: Your browser does not support the required
