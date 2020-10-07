@@ -1,28 +1,31 @@
 import Axios from "axios";
 
 type CurrentVersionResponse = {
-  tag_name: string;
-  zipball_url: string;
-  published_at: string;
+  tag_name?: string;
+  zipball_url?: string;
+  published_at?: string;
 };
 export const fetchCurrentVersion = async (): Promise<
-  CurrentVersionResponse | undefined
+  CurrentVersionResponse
 > => {
   try {
     const { data } = await Axios.get<CurrentVersionResponse>(
       "https://api.github.com/repos/NeverSinkDev/NeverSink-Filter/releases/latest"
     );
-    return data;
+    return data ?? {};
   } catch (error) {
     console.error(error.message);
-    return undefined;
+    return {};
   }
 };
 
-export type FiltersResponse = Array<{
-  path: string;
-  content: string;
-}>;
+export type FiltersResponse = {
+  files: Array<{
+    path: string;
+    content: string;
+  }>;
+  tag_name: string;
+};
 
 export const fetchLatestFilters = async () => {
   const { data } = await Axios.get<FiltersResponse>("/api/latest-zipball");

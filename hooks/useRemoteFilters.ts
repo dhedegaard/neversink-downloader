@@ -2,7 +2,10 @@ import React from "react";
 import { fetchLatestFilters, FiltersResponse } from "../fetcher";
 
 export const useRemoteFilters = () => {
-  const [filters, setFilters] = React.useState<FiltersResponse>([]);
+  const [filters, setFilters] = React.useState<FiltersResponse>({
+    files: [],
+    tag_name: "<Not fetched yet>",
+  });
 
   React.useEffect(() => {
     fetchLatestFilters()

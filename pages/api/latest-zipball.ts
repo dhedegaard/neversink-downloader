@@ -32,10 +32,18 @@ const getAllFilters = async (data: ReadStream): Promise<Entry[]> => {
 };
 
 const latestZipball: NextApiHandler = async (req, res) => {
-  const { zipball_url } = await fetchCurrentVersion();
+  const { zipball_url, tag_name } = await fetchCurrentVersion();
+
+  if (zipball_url == null || tag_name == null) {
+    return res.status(500).end("Error fetching release info from Github.");
+  }
+
   const { data } = await Axios.get(zipball_url, { responseType: "stream" });
   const entries = await getAllFilters(data);
-  return res.end(JSON.stringify(entries));
+  return res.json({
+    files: entries,
+    tag_name,
+  });
 };
 
 export default latestZipball;

@@ -1,14 +1,9 @@
 import { NextPage } from "next";
 import React from "react";
-import { fetchCurrentVersion } from "../fetcher";
 import { useRemoteFilters } from "../hooks/useRemoteFilters";
 import useSelectPoeDirectory from "../hooks/useSelectPoeDirectory";
 
-type Props = {
-  tag_name?: string;
-  published_at?: string;
-};
-const Index: NextPage<Props> = ({ tag_name, published_at }) => {
+const Index: NextPage = () => {
   const directory = useSelectPoeDirectory();
 
   const onClickSelectDirectory = React.useCallback(() => {
@@ -18,10 +13,10 @@ const Index: NextPage<Props> = ({ tag_name, published_at }) => {
   const remoteFilters = useRemoteFilters();
 
   const onClickWriteFilters = React.useCallback(async () => {
-    if (remoteFilters.length === 0 || directory.handle == null) {
+    if (remoteFilters.files.length === 0 || directory.handle == null) {
       return;
     }
-    for (const filter of remoteFilters) {
+    for (const filter of remoteFilters.files) {
       try {
         // @ts-expect-error
         const handle = await directory.handle.getFileHandle(filter.path, {
@@ -42,19 +37,13 @@ const Index: NextPage<Props> = ({ tag_name, published_at }) => {
 
   return (
     <div>
-      <p>Newest version: {tag_name}</p>
+      <p>Newest version: {remoteFilters.tag_name ?? "<Unknown>"}</p>
       <p>
         Currently installed version:{" "}
         {directory.currentlyInstalledVersion ?? "<None>"}
       </p>
-      <p>
-        Published:{" "}
-        {published_at != null
-          ? new Date(published_at).toLocaleString()
-          : "<Error fetching latest version>"}
-      </p>
       <button onClick={onClickSelectDirectory}>Vælg mappe!</button>
-      {(remoteFilters.length > 0 || directory.handle != null) && (
+      {(remoteFilters.files.length > 0 || directory.handle != null) && (
         <button onClick={onClickWriteFilters}>Skriv filtre!</button>
       )}
       <h1>Local filters:</h1>
@@ -66,16 +55,12 @@ const Index: NextPage<Props> = ({ tag_name, published_at }) => {
       {}
       <h1>Remote filters:</h1>
       <ul>
-        {remoteFilters.map((filter) => (
+        {remoteFilters.files.map((filter) => (
           <li key={filter.path}>{filter.path}</li>
         ))}
       </ul>
     </div>
   );
-};
-
-Index.getInitialProps = async () => {
-  return (await fetchCurrentVersion()) ?? {};
 };
 
 export default Index;
