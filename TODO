@@ -1,5 +1,7 @@
 Stuff to fix/implement later:
 
+- README.
+- Tell the user when the version installed is the newest one available.
 - Pretty UI.
   - Make it visible when a folder has already been selected.
 - Manifest file, favicon and opengraph.
