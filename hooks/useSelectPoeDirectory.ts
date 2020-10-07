@@ -1,4 +1,5 @@
 import React from "react";
+import { useIdb } from "./useIdb";
 
 type Result = {
   filters: string[];
@@ -9,6 +10,8 @@ type Result = {
 };
 
 const useSelectPoeDirectory = (): Result => {
+  const database = useIdb();
+
   const [type, setType] = React.useState<Result["type"]>(
     process.browser && !("showDirectoryPicker" in window)
       ? "unsupported"
@@ -17,11 +20,45 @@ const useSelectPoeDirectory = (): Result => {
   const [handle, setHandle] = React.useState<
     FileSystemDirectoryHandle | undefined
   >(undefined);
+
   const [filters, setFilters] = React.useState<string[]>([]);
   const [
     currentlyInstalledVersion,
     setCurrentlyInstalledVersion,
   ] = React.useState<string | undefined>(undefined);
+
+  // Whenever the handle changes, store or fetch the directory handle against the indexed DB.
+  React.useEffect(() => {
+    if (database == null) {
+      return;
+    }
+    (async () => {
+      if (handle != null) {
+        // If there's a handle, clear any old handle and store the new one.
+        await database.delete("handle", "handle");
+        await database.add("handle", handle, "handle");
+      } else {
+        // Otherwise, look for an old handle to reuse.
+        const oldHandle:
+          | FileSystemDirectoryHandle
+          | undefined = await database.get("handle", "handle");
+        if (oldHandle != null) {
+          if (
+            // @ts-expect-error
+            (await oldHandle.requestPermission({ mode: "readwrite" })) !==
+            "granted"
+          ) {
+            // The user cleared denied the request for access, clear the old handle.
+            await database.delete("handle", "handle");
+          } else {
+            // The user accepted the permissions for the old handle, use it.
+            setHandle(oldHandle);
+            setType("selected");
+          }
+        }
+      }
+    })();
+  }, [database, handle]);
 
   // Whenever the handle changes, iterate the files in the directory.
   React.useEffect(() => {

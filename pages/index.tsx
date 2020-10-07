@@ -100,7 +100,7 @@ const Index: NextPage = () => {
             onClick={onClickSelectDirectory}
             disabled={directory.type === "unsupported"}
           >
-            Choose the filter folder.
+            Choose the filter folder
           </Button>
         </Box>
         <Box mb={2}>
