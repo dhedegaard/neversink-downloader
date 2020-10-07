@@ -1,0 +1,4 @@
+.next
+.vscode
+yarn*.log
+node_modules
