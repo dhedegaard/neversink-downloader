@@ -80,11 +80,11 @@ const Index: NextPage = () => {
           </Typography>
         </Box>
         <Typography paragraph>
-          Newest version: {remoteFilters.tag_name ?? "<Unknown>"}
+          Newest version: <b>{remoteFilters.tag_name ?? "<Unknown>"}</b>
         </Typography>
         <Typography paragraph>
-          Currently installed version:{" "}
-          {directory.currentlyInstalledVersion ?? "<None>"}
+          Installed version:{" "}
+          <b>{directory.currentlyInstalledVersion ?? "<None>"}</b>
         </Typography>
         <Box mb={2}>
           <Divider />
