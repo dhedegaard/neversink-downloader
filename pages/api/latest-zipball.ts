@@ -1,8 +1,24 @@
 import Axios from "axios";
 import { NextApiHandler } from "next";
-import { fetchCurrentVersion } from "../../fetcher";
 import unzipper from "unzipper";
 import { ReadStream } from "fs";
+
+const fetchCurrentVersion = async () => {
+  type CurrentVersionResponse = {
+    tag_name?: string;
+    zipball_url?: string;
+    published_at?: string;
+  };
+  try {
+    const { data } = await Axios.get<CurrentVersionResponse>(
+      "https://api.github.com/repos/NeverSinkDev/NeverSink-Filter/releases/latest"
+    );
+    return data ?? {};
+  } catch (error) {
+    console.error(error.message);
+    return {};
+  }
+};
 
 type Entry = {
   path: string;
