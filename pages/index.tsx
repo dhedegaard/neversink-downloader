@@ -120,7 +120,7 @@ const Index: NextPage = () => {
             directory.type === "unsupported"
           }
         >
-          Skriv filtre!
+          Write the filter files
         </Button>
       </Container>
     </>
