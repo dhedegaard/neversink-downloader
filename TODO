@@ -4,6 +4,7 @@ Stuff to fix/implement later:
 - Tell the user when the version installed is the newest one available.
 - Pretty UI.
   - Make it visible when a folder has already been selected.
+- Indicate how many files were written to disk and show a checkmark or something.
 - Manifest file, favicon and opengraph.
 - PWA and service worker with skipWaiting.
 - Later, remove all the @ts-expect-error, when the required new types are in typescript.
