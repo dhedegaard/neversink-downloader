@@ -31,6 +31,7 @@ const Index: NextPage<Props> = ({ tag_name, published_at }) => {
       return;
     }
     for (const filter of remoteFilters) {
+      // @ts-expect-error
       const handle = await directory.handle.getFileHandle(filter.path, {
         create: true,
       });

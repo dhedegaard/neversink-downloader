@@ -3,19 +3,10 @@ import React from "react";
 type Result = {
   filters: string[];
   currentlyInstalledVersion: string | undefined;
-} & (
-  | {
-      type: "unsupported";
-      selectDirectory: () => void;
-      handle: undefined;
-    }
-  | { type: "not_selected_yet"; selectDirectory: () => void; handle: undefined }
-  | {
-      type: "selected";
-      handle: FileSystemDirectoryHandle;
-      selectDirectory: () => void;
-    }
-);
+  type: "unsupported" | "not_selected_yet" | "selected";
+  selectDirectory: () => void;
+  handle: undefined | FileSystemDirectoryHandle;
+};
 
 const useSelectPoeDirectory = (): Result => {
   const [type, setType] = React.useState<Result["type"]>(
@@ -37,6 +28,7 @@ const useSelectPoeDirectory = (): Result => {
     }
     (async () => {
       const filters = [];
+      // @ts-expect-error
       for await (const entry of handle.values()) {
         if (!(entry.kind === "file" && entry.name.endsWith(".filter"))) {
           continue;
@@ -44,10 +36,13 @@ const useSelectPoeDirectory = (): Result => {
         filters.push(entry.name);
         entry
           .getFile()
+          // @ts-expect-error
           .then((file) => file.text())
+          // @ts-expect-error
           .then((content) => {
             const versionLine = content
               .split("\n")
+              // @ts-expect-error
               .find((line) => line.startsWith("# VERSION:"));
             if (versionLine == null) {
               return;
