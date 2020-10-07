@@ -1,7 +1,7 @@
 Stuff to fix/implement later:
 
-- Show when the browser does not support the filesystem API's.
 - Pretty UI.
+  - Make it visible when a folder has already been selected.
 - Manifest file, favicon and opengraph.
-- PWA and service worker.
+- PWA and service worker with skipWaiting.
 - Later, remove all the @ts-expect-error, when the required new types are in typescript.
