@@ -10,7 +10,9 @@ type Result = {
 
 const useSelectPoeDirectory = (): Result => {
   const [type, setType] = React.useState<Result["type"]>(
-    "showDirectoryPicker" in globalThis ? "not_selected_yet" : "unsupported"
+    process.browser && "showDirectoryPicker" in window
+      ? "not_selected_yet"
+      : "unsupported"
   );
   const [handle, setHandle] = React.useState<
     FileSystemDirectoryHandle | undefined
