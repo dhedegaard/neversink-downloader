@@ -84,7 +84,12 @@ const Index: NextPage = () => {
         </Typography>
         <Typography paragraph>
           Installed version:{" "}
-          <b>{directory.currentlyInstalledVersion ?? "<None>"}</b>
+          <b>
+            {directory.currentlyInstalledVersion ??
+              (directory.type !== "selected"
+                ? "<Choose folder first>"
+                : "<Not installed>")}
+          </b>
         </Typography>
         <Box mb={2}>
           <Divider />

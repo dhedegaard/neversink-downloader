@@ -105,6 +105,9 @@ const useSelectPoeDirectory = (): Result => {
         setType("selected");
       })
       .catch((error) => {
+        if (error.message.includes("The user aborted a request.")) {
+          return;
+        }
         console.error(error);
         alert(
           "Error selecting a valid directory, try again or check your logs"
