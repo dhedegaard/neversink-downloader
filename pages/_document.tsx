@@ -85,6 +85,18 @@ export default class MyDocument extends Document {
           <meta name="msapplication-TileColor" content="#ffffff" />
           <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
           <meta name="theme-color" content="#3f51b5" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="Neversink Downloader" />
+          <meta
+            property="og:description"
+            content="Easily keep your Neversink lootfilter up to date!"
+          />
+          <meta property="og:site_name" content="Neversink Downloader" />
+          <meta property="og:url" content="https://neversink.culan.dk" />
+          <meta
+            property="og:image"
+            content="https://neversink.culan.dk/favicon-96x96.png"
+          />
         </Head>
         <body>
           <Main />
