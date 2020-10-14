@@ -20,6 +20,7 @@ import FlagIcon from "@material-ui/icons/Flag";
 const Index: NextPage = () => {
   const directory = useSelectPoeDirectory();
   const remoteFilters = useRemoteFilters();
+  const [writeFilterStatus, setWriteFilterStatus] = React.useState("");
 
   const onClickSelectDirectory = React.useCallback(() => {
     directory.selectDirectory();
@@ -29,8 +30,9 @@ const Index: NextPage = () => {
     if (remoteFilters.files.length === 0 || directory.handle == null) {
       return;
     }
-    for (const filter of remoteFilters.files) {
-      try {
+    try {
+      const length = remoteFilters.files.length;
+      for (const [index, filter] of remoteFilters.files.entries()) {
         // @ts-expect-error
         const handle = await directory.handle.getFileHandle(filter.path, {
           create: true,
@@ -39,15 +41,16 @@ const Index: NextPage = () => {
         await stream.write(filter.content);
         await stream.close();
         console.log(filter.path);
-      } catch (error) {
-        console.error(error);
-        alert(
-          `Error writing filter: ${filter.path}, try again or check your logs`
-        );
-        return;
+        setWriteFilterStatus(`[${index + 1} / ${length}] Writing filters`);
       }
+      setWriteFilterStatus(
+        `[${length} / ${length}] All filters written succesfully!`
+      );
+    } catch (error) {
+      console.error(error);
+      setWriteFilterStatus(`Error: ${error.message ?? error.toString()}`);
+      return;
     }
-    alert("Filters written succesfully");
   }, [remoteFilters, directory]);
 
   return (
@@ -146,18 +149,23 @@ const Index: NextPage = () => {
           <b>Step 2</b>, write the most current filters to disk by clicking the
           button below.
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onClickWriteFilters}
-          disabled={
-            remoteFilters.files.length === 0 ||
-            directory.handle == null ||
-            directory.type === "unsupported"
-          }
-        >
-          Write the filter files
-        </Button>
+        <Box display="flex" alignItems="center">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onClickWriteFilters}
+            disabled={
+              remoteFilters.files.length === 0 ||
+              directory.handle == null ||
+              directory.type === "unsupported"
+            }
+          >
+            Write the filter files
+          </Button>
+          <Box ml={2}>
+            <Typography>{writeFilterStatus}</Typography>
+          </Box>
+        </Box>
       </Container>
     </>
   );
