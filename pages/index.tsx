@@ -103,13 +103,15 @@ const Index: NextPage = () => {
                 label="Up to date"
                 size="small"
               />
-            ) : (
+            ) : directory.type === "selected" ? (
               <Chip
                 color="secondary"
                 icon={<FlagIcon />}
                 label="Outdated"
                 size="small"
               />
+            ) : (
+              <React.Fragment />
             )}
           </b>
         </Typography>
