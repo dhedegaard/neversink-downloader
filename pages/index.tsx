@@ -2,6 +2,7 @@ import {
   AppBar,
   Box,
   Button,
+  Chip,
   Container,
   Divider,
   Link,
@@ -13,6 +14,8 @@ import { NextPage } from "next";
 import React from "react";
 import { useRemoteFilters } from "../hooks/useRemoteFilters";
 import useSelectPoeDirectory from "../hooks/useSelectPoeDirectory";
+import CheckIcon from "@material-ui/icons/Check";
+import FlagIcon from "@material-ui/icons/Flag";
 
 const Index: NextPage = () => {
   const directory = useSelectPoeDirectory();
@@ -89,6 +92,22 @@ const Index: NextPage = () => {
               (directory.type !== "selected"
                 ? "<Choose folder first>"
                 : "<Not installed>")}
+            &nbsp;&nbsp;
+            {directory.currentlyInstalledVersion === remoteFilters.tag_name ? (
+              <Chip
+                color="primary"
+                icon={<CheckIcon />}
+                label="Up to date"
+                size="small"
+              />
+            ) : (
+              <Chip
+                color="secondary"
+                icon={<FlagIcon />}
+                label="Outdated"
+                size="small"
+              />
+            )}
           </b>
         </Typography>
         <Box mb={2}>
@@ -99,14 +118,26 @@ const Index: NextPage = () => {
             <b>Step 1</b>, select your "My Games\Path of Exile" folder using the
             button below.
           </Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={onClickSelectDirectory}
-            disabled={directory.type === "unsupported"}
-          >
-            Choose the filter folder
-          </Button>
+          <Box display="flex" alignItems="center">
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={onClickSelectDirectory}
+              disabled={directory.type === "unsupported"}
+            >
+              Choose the filter folder
+            </Button>
+            {directory.type === "selected" && (
+              <Box ml={2} display="flex" alignItems="center">
+                <CheckIcon fontSize="small" />
+                <Box ml={1}>
+                  <Typography color="primary">
+                    Filter folder selected
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+          </Box>
         </Box>
         <Box mb={2}>
           <Divider />
