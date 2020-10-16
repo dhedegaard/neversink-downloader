@@ -58,7 +58,19 @@ const Index: NextPage = () => {
       <AppBar position="static" color="primary">
         <Toolbar>
           <Container maxWidth="md">
-            <Typography variant="h6">Neversink downloader</Typography>
+            <Box display="flex" alignItems="center">
+              <Box
+                mr={1}
+                component="img"
+                width="24px"
+                height="24px"
+                {...({
+                  src: "/favicon-96x96.png",
+                  alt: "logo",
+                } as React.HTMLProps<HTMLImageElement>)}
+              />
+              <Typography variant="h6">Neversink downloader</Typography>
+            </Box>
           </Container>
         </Toolbar>
       </AppBar>

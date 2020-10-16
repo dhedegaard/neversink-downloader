@@ -1,3 +1,4 @@
 Stuff to fix/implement later:
 
 - Later, remove all the @ts-expect-error, when the required new types are in typescript.
+- A refresh button, for the newest release.
