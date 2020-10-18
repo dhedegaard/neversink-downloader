@@ -50,6 +50,8 @@ const Index: NextPage = () => {
       console.error(error);
       setWriteFilterStatus(`Error: ${error.message ?? error.toString()}`);
       return;
+    } finally {
+      directory.calculateCurrentVersion();
     }
   }, [remoteFilters, directory]);
 
@@ -100,33 +102,36 @@ const Index: NextPage = () => {
         <Typography paragraph>
           Newest version: <b>{remoteFilters.tag_name ?? "<Unknown>"}</b>
         </Typography>
-        <Typography paragraph>
-          Installed version:{" "}
-          <b>
-            {directory.currentlyInstalledVersion ??
-              (directory.type !== "selected"
-                ? "<Choose folder first>"
-                : "<Not installed>")}
-            &nbsp;&nbsp;
-            {directory.currentlyInstalledVersion === remoteFilters.tag_name ? (
-              <Chip
-                color="primary"
-                icon={<CheckIcon />}
-                label="Up to date"
-                size="small"
-              />
-            ) : directory.type === "selected" ? (
-              <Chip
-                color="secondary"
-                icon={<FlagIcon />}
-                label="Outdated"
-                size="small"
-              />
-            ) : (
-              <React.Fragment />
-            )}
-          </b>
-        </Typography>
+        <Box display="flex">
+          <Box mr={1}>
+            <Typography paragraph>
+              Installed version:{" "}
+              <b>
+                {directory.currentlyInstalledVersion ??
+                  (directory.type !== "selected"
+                    ? "<Choose folder first>"
+                    : "<Not installed>")}
+              </b>
+            </Typography>
+          </Box>
+          {directory.currentlyInstalledVersion === remoteFilters.tag_name ? (
+            <Chip
+              color="primary"
+              icon={<CheckIcon />}
+              label="Up to date"
+              size="small"
+            />
+          ) : directory.type === "selected" ? (
+            <Chip
+              color="secondary"
+              icon={<FlagIcon />}
+              label="Outdated"
+              size="small"
+            />
+          ) : (
+            <React.Fragment />
+          )}
+        </Box>
         <Box mb={2}>
           <Divider />
         </Box>

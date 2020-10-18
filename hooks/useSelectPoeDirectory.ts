@@ -7,6 +7,7 @@ type Result = {
   type: "unsupported" | "not_selected_yet" | "selected";
   selectDirectory: () => void;
   handle: undefined | FileSystemDirectoryHandle;
+  calculateCurrentVersion: () => void;
 };
 
 const useSelectPoeDirectory = (): Result => {
@@ -60,9 +61,10 @@ const useSelectPoeDirectory = (): Result => {
     })();
   }, [database, handle]);
 
-  // Whenever the handle changes, iterate the files in the directory.
-  React.useEffect(() => {
+  const calculateCurrentVersion = React.useCallback(() => {
+    console.log("calculate", handle);
     if (handle == null) {
+      setCurrentlyInstalledVersion(undefined);
       return;
     }
     (async () => {
@@ -93,7 +95,15 @@ const useSelectPoeDirectory = (): Result => {
       }
       setFilters(filters);
     })();
-  }, [handle, setCurrentlyInstalledVersion]);
+  }, [setCurrentlyInstalledVersion, setFilters, handle]);
+
+  // Whenever the handle changes, iterate the files in the directory.
+  React.useEffect(() => {
+    if (handle == null) {
+      return;
+    }
+    calculateCurrentVersion();
+  }, [calculateCurrentVersion, handle]);
 
   const selectDirectory = React.useCallback(() => {
     if (type === "unsupported") {
@@ -115,7 +125,14 @@ const useSelectPoeDirectory = (): Result => {
       });
   }, [setHandle, type]);
 
-  return { type, handle, selectDirectory, filters, currentlyInstalledVersion };
+  return {
+    type,
+    handle,
+    selectDirectory,
+    filters,
+    currentlyInstalledVersion,
+    calculateCurrentVersion,
+  };
 };
 
 export default useSelectPoeDirectory;
