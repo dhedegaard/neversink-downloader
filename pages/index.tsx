@@ -5,21 +5,24 @@ import {
   Chip,
   Container,
   Divider,
+  IconButton,
   Link,
   Toolbar,
   Typography,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { NextPage } from "next";
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React from "react";
 import { useRemoteFilters } from "../hooks/useRemoteFilters";
 import useSelectPoeDirectory from "../hooks/useSelectPoeDirectory";
 import CheckIcon from "@material-ui/icons/Check";
 import FlagIcon from "@material-ui/icons/Flag";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 const Index: NextPage = () => {
   const directory = useSelectPoeDirectory();
-  const remoteFilters = useRemoteFilters();
+  const { filters: remoteFilters, refetchRemoteFilters } = useRemoteFilters();
   const [writeFilterStatus, setWriteFilterStatus] = React.useState("");
 
   const onClickSelectDirectory = React.useCallback(() => {
@@ -33,14 +36,13 @@ const Index: NextPage = () => {
     try {
       const length = remoteFilters.files.length;
       for (const [index, filter] of remoteFilters.files.entries()) {
-        // @ts-expect-error
+        // @ts-expect-error Missing API in declaration
         const handle = await directory.handle.getFileHandle(filter.path, {
           create: true,
         });
         const stream = await handle.createWritable();
         await stream.write(filter.content);
         await stream.close();
-        console.log(filter.path);
         setWriteFilterStatus(`[${index + 1} / ${length}] Writing filters`);
       }
       setWriteFilterStatus(
@@ -99,9 +101,22 @@ const Index: NextPage = () => {
             to date.
           </Typography>
         </Box>
-        <Typography paragraph>
-          Newest version: <b>{remoteFilters.tag_name ?? "<Unknown>"}</b>
-        </Typography>
+        <Box display="flex">
+          <Typography paragraph>
+            Newest version: <b>{remoteFilters.tag_name}</b>
+          </Typography>
+          <Box ml={2}>
+            <IconButton
+              disabled={remoteFilters.loading}
+              size="small"
+              onClick={refetchRemoteFilters}
+              type="button"
+              color="default"
+            >
+              <RefreshIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        </Box>
         <Box display="flex">
           <Box mr={1}>
             <Typography paragraph>
@@ -114,14 +129,15 @@ const Index: NextPage = () => {
               </b>
             </Typography>
           </Box>
-          {directory.currentlyInstalledVersion === remoteFilters.tag_name ? (
+          {!remoteFilters.loading &&
+          directory.currentlyInstalledVersion === remoteFilters.tag_name ? (
             <Chip
               color="primary"
               icon={<CheckIcon />}
               label="Up to date"
               size="small"
             />
-          ) : directory.type === "selected" ? (
+          ) : !remoteFilters.loading && directory.type === "selected" ? (
             <Chip
               color="secondary"
               icon={<FlagIcon />}
@@ -137,8 +153,8 @@ const Index: NextPage = () => {
         </Box>
         <Box mb={2}>
           <Typography paragraph>
-            <b>Step 1</b>, select your "My Games\Path of Exile" folder using the
-            button below.
+            <b>Step 1</b>, select your &quot;My Games\Path of Exile&quot; folder
+            using the button below.
           </Typography>
           <Box display="flex" alignItems="center">
             <Button

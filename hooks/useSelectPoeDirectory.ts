@@ -62,7 +62,6 @@ const useSelectPoeDirectory = (): Result => {
   }, [database, handle]);
 
   const calculateCurrentVersion = React.useCallback(() => {
-    console.log("calculate", handle);
     if (handle == null) {
       setCurrentlyInstalledVersion(undefined);
       return;

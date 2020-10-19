@@ -2,15 +2,26 @@ import React from "react";
 import { fetchLatestFilters, FiltersResponse } from "../fetcher";
 
 export const useRemoteFilters = () => {
-  const [filters, setFilters] = React.useState<FiltersResponse>({
+  const [filters, setFilters] = React.useState<
+    FiltersResponse & { loading: boolean }
+  >({
     files: [],
     tag_name: "<Fetching>",
+    loading: true,
   });
 
-  React.useEffect(() => {
+  const innerFetchRemoteFilters = React.useCallback(() => {
+    setFilters({
+      files: [],
+      tag_name: "<Fetching>",
+      loading: true,
+    });
     fetchLatestFilters()
       .then((resp) => {
-        setFilters(resp);
+        setFilters({
+          ...resp,
+          loading: false,
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -18,7 +29,18 @@ export const useRemoteFilters = () => {
           "Error fetching the latest filters, check your logs or try again"
         );
       });
-  }, [setFilters]);
+  }, []);
 
-  return filters;
+  const refetchRemoteFilters = React.useCallback(() => {
+    if (filters.loading) {
+      return;
+    }
+    innerFetchRemoteFilters();
+  }, [filters, innerFetchRemoteFilters]);
+
+  React.useEffect(() => {
+    innerFetchRemoteFilters();
+  }, [innerFetchRemoteFilters]);
+
+  return { filters, refetchRemoteFilters };
 };
