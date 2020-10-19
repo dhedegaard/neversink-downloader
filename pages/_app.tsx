@@ -1,6 +1,7 @@
 import { CssBaseline } from "@material-ui/core";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React from "react";
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {

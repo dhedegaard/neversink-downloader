@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React from "react";
 import { ServerStyleSheets } from "@material-ui/core";
 import Document, { Head, Html, Main, NextScript } from "next/document";

@@ -45,7 +45,7 @@ const useSelectPoeDirectory = (): Result => {
           | undefined = await database.get("handle", "handle");
         if (oldHandle != null) {
           if (
-            // @ts-expect-error
+            // @ts-expect-error Missing API in declaration.
             (await oldHandle.requestPermission({ mode: "readwrite" })) !==
             "granted"
           ) {
